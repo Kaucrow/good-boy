@@ -23,9 +23,20 @@ The ATtiny85 is integrated into a 32GB flash drive casing for a low-profile aest
 
 <div align="center" style="display: flex; justify-content: center; gap: 10px;">
     <img src="./assets/top.jpg" width="30%"/>
+    <img src="./assets/main.jpg" width="30%"/>
     <img src="./assets/bottom.jpg" width="30%"/>
-    <img src="./assets/side.jpg" width="30%"/>
 </div>
+
+<br>
+
+The USB-A male plug connection on the ATtiny85 is as follows:
+
+| USB-A Pin | Standard Wire Color | ATtiny85 Pin |
+| --------- | ------------------- | ------------ |
+| GND	    | Black               | GND
+| D+	    | Green               | P4 (USB D-)
+| D-	    | White	              | P3 (USB D+)
+| VCC       | Red                 |	VIN
 
 ### 2. Payloads
 
