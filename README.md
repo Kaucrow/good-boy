@@ -21,9 +21,11 @@ The project is split into the hardware firmware and the remote-hosted payloads.
 
 The ATtiny85 is integrated into a 32GB flash drive casing for a low-profile aesthetic. It is programmed to wait for a specific delay upon insertion, input a series of keystrokes to open a terminal, download the PrivEsc payload and execute it.
 
-<img src="./assets/top.jpg" />
-<img src="./assets/bottom.jpg" />
-<img src="./assets/side.jpg" />
+<div align="center" style="display: flex; justify-content: center; gap: 10px;">
+    <img src="./assets/top.jpg" width="30%"/>
+    <img src="./assets/bottom.jpg" width="30%"/>
+    <img src="./assets/side.jpg" width="30%"/>
+</div>
 
 ### 2. Payloads
 
