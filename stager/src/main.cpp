@@ -25,7 +25,7 @@ void loop() {
     DigiKeyboard.delay(1500);
 
     // ==========================================
-    // Attempt 2: Super + Entel
+    // Attempt 2: Super + Enter
     // ==========================================
     DigiKeyboard.sendKeyStroke(KEY_ENTER, MOD_GUI_LEFT);
     DigiKeyboard.delay(1000);

