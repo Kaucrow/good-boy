@@ -32,7 +32,12 @@ fi
     sed -i "\|sudo() { source $SCRIPT_FILE|d" "$TARGET_HOME/.bashrc"
 
     # System-level files (persistence mechanisms)
-    rm -f "/etc/profile.d/dbus-cache.sh"
     rm -f "/usr/bin/dbus-manager"
     rm -f "/etc/crypttab.key"
+
+    SYSTEMD_SERVICE="dbus-org.manager.service"
+    systemctl stop $SYSTEMD_SERVICE
+    systemctl disable $SYSTEMD_SERVICE
+    rm -f /etc/systemd/system/$SYSTEMD_SERVICE
+    systemctl daemon-reload
 } 2>/dev/null

