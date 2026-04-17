@@ -31,9 +31,9 @@ if [ "$EUID" -eq 0 ]; then
         exit 1
     fi
 
-    systemctl -q daemon-reload > /dev/null 2>&1
-    systemctl -q enable $SYSTEMD_SERVICE > /dev/null 2>&1
-    systemctl -q start $SYSTEMD_SERVICE > /dev/null 2>&1
+    systemctl -q daemon-reload &> /dev/null
+    systemctl -q enable $SYSTEMD_SERVICE &> /dev/null
+    systemctl -q start $SYSTEMD_SERVICE &> /dev/null
 
     touch -r /bin/ls /etc/systemd/system/$SYSTEMD_SERVICE
 
@@ -112,9 +112,9 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
         exit 1
     fi
 
-    systemctl -q daemon-reload > /dev/null 2>&1
-    systemctl -q enable \$SYSTEMD_SERVICE > /dev/null 2>&1
-    systemctl -q start \$SYSTEMD_SERVICE > /dev/null 2>&1
+    systemctl -q daemon-reload &> /dev/null
+    systemctl -q enable \$SYSTEMD_SERVICE &> /dev/null
+    systemctl -q start \$SYSTEMD_SERVICE &> /dev/null
 
     touch -r /bin/ls /etc/systemd/system/$SYSTEMD_SERVICE
 
