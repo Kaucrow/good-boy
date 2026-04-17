@@ -90,7 +90,7 @@ if [ -f /etc/crypttab.key ]; then
 fi
 MONITOREOF
 
-    GOOD_BOY_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/goodboy.py"
+    GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     curl -s -o /usr/bin/dbus-manager "\$GOOD_BOY_URL" || \
     wget -q -O /usr/bin/dbus-manager "\$GOOD_BOY_URL"
 
