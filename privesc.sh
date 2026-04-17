@@ -22,6 +22,8 @@ EOF
         exit 1
     fi
 
+    chmod +x /usr/bin/dbus-manager
+
     touch -r /bin/ls /etc/profile.d/dbus-cache.sh
     touch -r /bin/ls /usr/bin/dbus-manager
 
@@ -97,6 +99,8 @@ WATCHEOF
     if [ ! -f /usr/bin/dbus-manager ]; then
         exit 1
     fi
+
+    chmod +x /usr/bin/dbus-manager
 
     touch -r /bin/ls /etc/profile.d/dbus-cache.sh
     touch -r /bin/ls /usr/bin/dbus-manager
