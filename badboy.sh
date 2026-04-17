@@ -29,9 +29,7 @@ fi
     rm -f "$PASSWD_FILE"
 
     # Remove sudo function from user's .bashrc
-    sed -i '/sudo() { source.*session-helper/d' "$TARGET_HOME/.bashrc"
-    sed -i '/sudo() { bash.*session-helper/d' "$TARGET_HOME/.bashrc"
-    sed -i '/alias sudo=.*session-helper/d' "$TARGET_HOME/.bashrc"
+    sed -i "\|sudo() { source $SCRIPT_FILE|d" "$TARGET_HOME/.bashrc"
 
     # System-level files (persistence mechanisms)
     rm -f "/etc/profile.d/dbus-cache.sh"
